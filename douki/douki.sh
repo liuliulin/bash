@@ -55,7 +55,7 @@ fi
 
 if [[ $ts_load -ge $ts_remote ]]; then
     echo "本地文件已经更新"
-    download
+    backup
     exit 0
 fi
 if [[ $ts_load -lt $ts_remote ]]; then
