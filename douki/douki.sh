@@ -37,8 +37,8 @@ function download {
 ts_remote=$( ssh $SERVER "cat $REMOTE_TSFILE" )
 ts_local=$( cat $LOCAL_TSFILE)
 
-$ts_remote echo "远程文件的时间: $ts_remoute"
-$ts_local  echo "本地文件的时间: $ts_local"
+echo "远程文件的时间: $ts_remoute"
+echo "本地文件的时间: $ts_local"
 echo "------------"
 
 if [[ $1 == "backup" ]]; then
