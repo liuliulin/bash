@@ -1,0 +1,101 @@
+
+匹配
+pation之后是动作
+# awk [options ] 'PATTERN {action }' file1 file2 ....
+
+# awk -F : '/bash/ {print $0}' /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+# awk -F : '/bash/ {print $1}' /etc/passwd
+root
+
+表达式
+# awk -F : '$3 >= 500 {print $1}' /etc/passwd
+nfsnobody
+flnet
+mysql
+
+匹配指定范围
+# awk -F : '/bash|500/ {print $1}' /etc/passwd
+root
+flnet
+
+Begin end 特殊模式(awk预读每一行的时候,都会打印一行)
+# awk -F : '$3>=500 {print "UserName    UID";printf "%-12s%i\n", $1,$3}' /etc/passwd
+UserName    UID
+nfsnobody   65534
+UserName    UID
+flnet       500
+UserName    UID
+mysql       501
+
+# awk -F : 'BEGIN{print "UserName    UID"} $3>=500 {printf "%-12s%i\n", $1,$3}' /etc/passwd
+UserName    UID
+nfsnobody   65534
+flnet       500
+mysql       501
+
+awk -F : 'BEGIN{print "UserName    UID"} {if($3 >= 500) printf "%-12s%i\n", $1,$3}' /etc/passwd
+UserName    UID
+nfsnobody   65534
+flnet       500
+mysql       501
+
+End应用 添加表尾
+
+wk -F : 'BEGIN{print "UserName    UID"} $3>=500 {printf "%-12s%i\n", $1,$3}END{print "END"}' /etc/passwd
+UserName    UID
+nfsnobody   65534
+flnet       500
+mysql       501
+END
+
+BEGIN 赋值
+# awk -F : '{print $1}' /etc/passwd |head -1
+root
+
+# awk -v FS=: '{print $1}' /etc/passwd |head -1
+root
+
+# awk 'BEGIN{FS=":"}{print $1}' /etc/passwd |head -1           
+root
+
+控制语句
+if语句
+# awk -F: -v sum=0 '{if ($3>=500) sum++}END{print sum}' /etc/passwd
+3
+# awk -F: '{if ($3>=500) print $NF}' /etc/passwd
+/sbin/nologin
+/bin/bash
+/sbin/nologin
+# awk -F: '{if ($3>=500) print $NF}' /etc/passwd | wc -l
+3
+
+# awk -F: '{if ($3 ==0) print $1,"Admin";else print $1,"Comman user"}' /etc/passwd | head -3
+root Admin
+bin Comman user
+daemon Comman user
+
+while 语句
+# awk -F: '{i=1;while (i<=3) {print $i; i++}}' /etc/passwd | head -3
+root
+x
+0
+
+特殊模式 !~ 如果不匹配pattion就取反
+# awk -F: '$1 !~ /^root/ {i=1;while (i<=3) {print $i; i++}}' /etc/passwd | head -3
+bin
+x
+1
+
+用awk的while循环计算1+。。。+100
+# awk 'BEGIN{i=1;while (i<=100) {sum+=i;print sum;i++}}' |tail -1
+5050
+
+# awk 'BEGIN{i=1;do {sum+=i;print sum;i++}while(i<=100)}'|tail -1
+5050
+
+# awk 'BEGIN{i=1;do {sum=sum+i;print sum;i++}while(i<=100)}'|tail -1  
+5050
+
+# awk 'BEGIN{i=1;do {sum+=i;i++}while(i<=100) print sum}' 
+(没有循环过程,只有结果)
