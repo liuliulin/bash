@@ -1,0 +1,100 @@
+用法
+# awk [options ] 'scripts' file1 file2 ...
+# awk [options ] 'PATTERN {action }' file1 file2 ...
+
+内置变量
+    以下为awk内置变量：
+        ARGC            命令行参数个数
+        FILENAME        当前输入文档的名称
+        FNR             当前输入文档的当前记录编号，尤其当有多个输入文档时有用
+        NR              输入流的当前记录编号
+        NF              当前记录的字段个数
+        FS              字段分隔符
+        OFS             输出字段分隔符，默认为空格
+        ORS             输出记录分隔符，默认为换行符\n
+        RS              输入记录分隔符，默认为换行符\n
+
+显示第一列字段 第一片(每片$n 整行$0)
+# df -h | awk '{print $1}'
+Filesystem
+/dev/mapper/centos-root
+devtmpfs
+tmpfs
+tmpfs
+tmpfs
+/dev/sdb1
+/dev/sda1
+tmpfs
+
+-F 指定分隔符(类似cut -d)
+# awk -F : '{print $1}' /etc/passwd | head -3
+root
+bin
+daemon 
+设置内置FS变量,也能实现 -F 的功能
+# awk -v FS=: '{print $1}' /etc/passwd | head -3
+root
+bin
+daemon
+
+如果列数不一致,取左后一列 ($NF)
+# awk -F : '{print $NF}' /etc/passwd | head -3
+/bin/bash
+/sbin/nologin
+/sbin/nologin
+
+打印倒数第2字段 将NF做数学运算
+awk -F : '{print $(NF-2)}' /etc/passwd | head -3
+root
+bin
+daemon
+# head -1 /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+
+OFS 输出字段分隔符,默认为空格
+# awk -F : '{print $1 $2}' /etc/passwd | head -3
+rootx
+binx
+daemonx
+# awk -F : '{print $1,$2}' /etc/passwd | head -3
+root x
+bin x
+daemon x
+# awk -v OFS=: -F : '{print $1,$2}' /etc/passwd | head -3
+root:x
+bin:x
+daemon:x
+
+
+printf => 格式化输出字符串
+字符串个数%s 双引号引起来
+不能自动换行 需要\n
+格式符串可以加修饰符
+
+# head -3 /etc/passwd | awk -F : '{printf "%10s,%s", $1,$2}'
+      root,x       bin,x    daemon,x
+# head -3 /etc/passwd | awk -F : '{printf "%10s,%s\n", $1,$2}'
+      root,x
+       bin,x
+    daemon,x
+
+-修饰符,输出左对齐
+
+# head -3 /etc/passwd | awk -F : '{printf "%-10s,%-s\n", $1,$2}'
+root      ,x
+bin       ,x
+daemon    ,x
+
+格式之间的符号会输出,不需要写
+# head -3 /etc/passwd | awk -F : '{printf "%-10s%-s\n", $1,$2}'
+root      x
+bin       x
+daemon    x
+
+输出重定向
+head -3 /etc/passwd | awk -F : '{printf "%-10s%-i\n", $1,$3 > "/tmp/t.log"}'
+# cat /tmp/t.log 
+root      0
+bin       1
+daemon    2
+
