@@ -1,0 +1,76 @@
+控制语句
+if语句
+# awk -F: -v sum=0 '{if ($3>=500) sum++}END{print sum}' /etc/passwd
+3
+# awk -F: '{if ($3>=500) print $NF}' /etc/passwd
+/sbin/nologin
+/bin/bash
+/sbin/nologin
+# awk -F: '{if ($3>=500) print $NF}' /etc/passwd | wc -l
+3
+
+# awk -F: '{if ($3 ==0) print $1,"Admin";else print $1,"Comman user"}' /etc/passwd | head -3
+root Admin
+bin Comman user
+daemon Comman user
+
+while 语句
+# awk -F: '{i=1;while (i<=3) {print $i; i++}}' /etc/passwd | head -3
+root
+x
+0
+
+特殊模式 !~ 如果不匹配pattion就取反
+# awk -F: '$1 !~ /^root/ {i=1;while (i<=3) {print $i; i++}}' /etc/passwd | head -3
+bin
+x
+1
+
+用awk的while循环计算1+...100
+# awk 'BEGIN{i=1;while (i<=100) {sum+=i;print sum;i++}}' | tail -1
+5050
+
+# awk 'BEGIN{i=1;do {sum+=i;print sum;i++}while(i<=100)}' | tail -1
+5050
+
+# awk 'BEGIN{i=1;do {sum=sum+i;print sum;i++}while(i<=100)}' | tail -1  
+5050
+
+# awk 'BEGIN{i=1;do {sum+=i;i++}while(i<=100) print sum}' 
+5050
+(没有循环过程,只有结果)
+
+for循环
+# awk -F: '$3>=500{for (i=1;i<=NF;i+=2) print $i}' /etc/passwd
+nfsnobody
+65534
+Anonymous NFS User
+/sbin/nologin
+flnet
+500
+
+/bin/bash
+mysql
+501
+
+/sbin/nologin
+
+打印第奇数个字段
+# awk -F: '$3>=500{for (i=1;i<=5;i+=2) print $i}' /etc/passwd
+nfsnobody
+65534
+Anonymous NFS User
+flnet
+500
+
+mysql
+501
+
+
+for 循环 1加到100
+# awk 'BEGIN{for (i=i;i<=100;i++) {j=j+i;print j}}' | tail -1
+5050
+
+# awk 'BEGIN{j=0;for (i=1;i<=100;i++) j+=i;{print j}}'
+5050
+

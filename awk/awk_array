@@ -1,0 +1,7 @@
+Awk的 数组
+
+数组就是变量的集合体
+Shell中的打印 echo ${A["x"]} 需要${}才能输出变量，而awk不用
+下标可以是任意字符，但是我们要将字符用引号引起来，以免被误认为变量
+# awk 'BEGIN{a["x"]="hello";a["y"]="world";print a["x"],a["y"]}'
+hello world

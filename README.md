@@ -6,4 +6,4 @@
 * makefile => make命令进行的简单批处理
 * snapshot => 模拟快照(用管道操作日志)
 * douki => 云备份(组合处理流程)
-* awk => awk使用手册
+* awk => awk总结
